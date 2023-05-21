@@ -434,14 +434,14 @@ void *Mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset)
     void *ptr;
 
     if ((ptr = mmap(addr, len, prot, flags, fd, offset)) == ((void *) -1))
-        unix_error("mmap error"); //exit(1) 까지 해줌
+	unix_error("mmap error");
     return(ptr);
 }
 
 void Munmap(void *start, size_t length) 
 {
     if (munmap(start, length) < 0)
-        unix_error("munmap error");
+	unix_error("munmap error");
 }
 
 /***************************************************
@@ -453,7 +453,7 @@ void *Malloc(size_t size)
     void *p;
 
     if ((p  = malloc(size)) == NULL)
-        unix_error("Malloc error");
+	unix_error("Malloc error");
     return p;
 }
 
@@ -462,7 +462,7 @@ void *Realloc(void *ptr, size_t size)
     void *p;
 
     if ((p  = realloc(ptr, size)) == NULL)
-        unix_error("Realloc error");
+	unix_error("Realloc error");
     return p;
 }
 
@@ -1060,7 +1060,7 @@ int Open_listenfd(char *port)
     int rc;
 
     if ((rc = open_listenfd(port)) < 0)
-	unix_error("Open_listenfd error");
+	    unix_error("Open_listenfd error");
     return rc;
 }
 
