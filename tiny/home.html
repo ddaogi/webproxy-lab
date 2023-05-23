@@ -1,11 +1,26 @@
 <html>
 <head><title>test</title></head>
-<body> 
-<!-- <img position = "center" src="sample.mpeg"> -->
-<video width="320" height="240" controls>
+<!-- <body> 
+<img position = "center" src="sample.mpeg"> -->
+<!-- <video width="320" height="240" controls>
     <source src="sample.mpeg" type="video/mp4"> 
   </video>
-  
+  <form>
+    <label for="textbox">Value:</label>
+    <input type="text" id="textbox" name = "A" required><br><br>
+    <input type="text" id="textbox" name = "B" required><br><br>
 
+    
+    <input type="submit" value="Submit" formaction="/cgi-bin/adder" formmethod="get">
+</form>
+
+</body> -->
+
+<body>
+  <form action="/cgi-bin/adder" method="GET">
+    <p>first number: <input type="text" name="n1" /></p>
+    <p>second number: <input type="text" name="n2" /></p>
+    <input type="submit" value="Submit" />
+  </form>
 </body>
 </html>

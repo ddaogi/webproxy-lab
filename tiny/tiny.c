@@ -53,6 +53,8 @@ int main(int argc, char **argv) {
     doit(connfd);
     // doit(connfd);   // line:netp:tiny:doit
     Close(connfd);  // line:netp:tiny:close
+
+    printf("----------------------------------------\n");
   }
 }
 /*
@@ -69,7 +71,7 @@ void doit(int fd){
   char buf[MAXLINE], method[MAXLINE], uri[MAXLINE], version[MAXLINE];
   char filename[MAXLINE], cgiargs[MAXLINE];
   rio_t rio;
-
+  printf("-0-0-0--------------------------\n");
   /* Read request line and headers */
   Rio_readinitb(&rio, fd);
   Rio_readlineb(&rio, buf, MAXLINE);
@@ -77,12 +79,17 @@ void doit(int fd){
   printf("%s", buf);
   sscanf(buf, "%s %s %s", method, uri, version);
   
-  //GET 이 아닐경우
-  if(strcasecmp(method, "GET")){
+  //GET 이나 HEAD가 아닐경우 에러발생
+  if((strcasecmp(method, "GET")) && strcasecmp(method,"HEAD")){
     clienterror(fd, method, "501", "Not implemented",
           "Tiny couldn't find this file");
     return;
   }
+
+  //HEAD일경우 response body를 보내지않고, header만 반환하게 해야됨 (구현안함)
+
+
+  
   read_requesthdrs(&rio);
 
   /*Parse URI from GET request */
@@ -110,6 +117,8 @@ void doit(int fd){
     }
     serve_dynamic(fd, filename, cgiargs);
   }
+
+  printf("****************************************\n");
 }
 void echo(int fd)
 {
@@ -175,7 +184,7 @@ void read_requesthdrs(rio_t *rp){
 
 
 int parse_uri(char* uri, char *filename, char *cgiargs){
-  char *ptr;
+  char *ptr;  
 
   if(!strstr(uri, "cgi-bin")){ // static content
     strcpy(cgiargs, "");
@@ -236,7 +245,6 @@ void get_filetype(char* filename, char *filetype){
     strcpy(filetype, "video/mpeg");
   else
     strcpy(filetype, "text/plain");
-  
 }
 
 //동적 컨텐츠를 클라이언트에 제공하는 함수

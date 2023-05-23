@@ -10,15 +10,27 @@ int main(void) {
   int n1=0, n2=0;
 
   /*Extract the two arguments */
-  if ((buf = getenv("QUERY_STRING")) != NULL){
+  // if ((buf = getenv("QUERY_STRING")) != NULL){
+  //   p = strchr(buf, '&'); //adder?55&333   A=55&B=333
+  //   *p = '\0';
+    
+  //   strcpy(arg1, buf+2);
+  //   strcpy(arg2, p+3);
+  //   n1 = atoi(arg1);
+  //   n2 = atoi(arg2);
+
+    
+  // }
+
+  if ((buf = getenv("QUERY_STRING")) != NULL)
+  {
     p = strchr(buf, '&');
     *p = '\0';
     strcpy(arg1, buf);
-    strcpy(arg2, p+1);
-    n1 = atoi(arg1);
-    n2 = atoi(arg2);
+    strcpy(arg2, p + 1);
+    n1 = atoi(strchr(arg1, '=') + 1);
+    n2 = atoi(strchr(arg2, '=') + 1);
   }
-
   /*Make the response body */
   sprintf(content, "QUERY_STRING=%s", buf);
   sprintf(content, "Welcome to add.com: ");
