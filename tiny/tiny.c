@@ -53,8 +53,6 @@ int main(int argc, char **argv) {
     doit(connfd);
     // doit(connfd);   // line:netp:tiny:doit
     Close(connfd);  // line:netp:tiny:close
-
-    printf("----------------------------------------\n");
   }
 }
 /*
@@ -71,7 +69,6 @@ void doit(int fd){
   char buf[MAXLINE], method[MAXLINE], uri[MAXLINE], version[MAXLINE];
   char filename[MAXLINE], cgiargs[MAXLINE];
   rio_t rio;
-  printf("-0-0-0--------------------------\n");
   /* Read request line and headers */
   Rio_readinitb(&rio, fd);
   Rio_readlineb(&rio, buf, MAXLINE);
@@ -118,37 +115,8 @@ void doit(int fd){
     serve_dynamic(fd, filename, cgiargs);
   }
 
-  printf("****************************************\n");
 }
-void echo(int fd)
-{
-	size_t n;
-	rio_t rio;
-	char io_buf[MAXBUF];
-	int fp;
-	
-	/* Send response headers to client */
-	sprintf(io_buf, "HTTP/1.0 200 OK\r\n");
-	sprintf(io_buf, "%sServer: Tiny Web Server\r\n", io_buf);
-	sprintf(io_buf, "%sConnection: close\r\n\r\n", io_buf);
-	Rio_writen(fd, io_buf, strlen(io_buf));
-	printf("**  echo server  **\n");
-	printf("Response headers:\n");
-	printf("%s", io_buf);
-	
-	fp = open("./logfile", O_WRONLY | O_CREAT,0644);
-	
-	/* Send response body to client */
-	Rio_readinitb(&rio, fd);
-	while((n = Rio_readlineb(&rio, io_buf, MAXLINE)) != 0){
-		if (strcmp(io_buf, "\r\n") == 0)
-			break;
-		Rio_writen(fp, io_buf, n);
-		Rio_writen(fd, io_buf, n);
-	}
-	
-	close(fp);
-}
+
 
 void clienterror(int fd, char *cause, char*errnum, char* shortmsg, char*longmsg){
   char buf[MAXLINE], body[MAXBUF];
@@ -225,10 +193,15 @@ void serve_static(int fd, char *filename, int filesize){
 
   /* Send response body to client */
   srcfd = Open(filename, O_RDONLY, 0);
-  srcp = Mmap(0, filesize, PROT_READ, MAP_PRIVATE, srcfd, 0);
+  // srcp = Mmap(0, filesize, PROT_READ, MAP_PRIVATE, srcfd, 0);
+  // srcfd 에있는 filesize 만큼을 어떤메모리에 저장하고, 그 주소값을
+  //  리턴 그게 srcp
+  srcp = (char*)Malloc(filesize);
+  Rio_readn(srcfd, srcp, filesize);
   Close(srcfd);
   Rio_writen(fd, srcp, filesize);
-  Munmap(srcp, filesize);
+  // Munmap(srcp, filesize);
+  free(srcp);
 }
 
 /* get_filetype - Derive file type from filename */
@@ -264,4 +237,5 @@ void serve_dynamic(int fd, char *filename, char *cgiargs){
     Execve(filename, emptylist, environ); // Run CGI program
   }
   Wait(NULL);
+  
 }

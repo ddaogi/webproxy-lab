@@ -760,7 +760,7 @@ ssize_t rio_readn(int fd, void *usrbuf, size_t n)
 		return -1;      /* errno set by read() */ 
 	} 
 	else if (nread == 0)
-	    break;              /* EOF */
+	    break;          /* EOF */
 	nleft -= nread;
 	bufp += nread;
     }
